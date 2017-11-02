@@ -22,55 +22,60 @@
 package org.komodo.metadata;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
+import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.komodo.spi.runtime.ConnectionDriver;
 import org.komodo.spi.runtime.TeiidDataSource;
 import org.komodo.spi.runtime.TeiidVdb;
 import org.komodo.spi.runtime.version.DefaultMetadataVersion;
 import org.komodo.test.utils.TestUtilities;
+import org.teiid.adminapi.AdminProcessingException;
 import org.teiid.core.util.ApplicationInfo;
 
+@RunWith( Arquillian.class )
 public class TestMetadataServer extends AbstractMetadataInstanceTests {
 
     @Test
-    public void shouldGetVersion() throws Exception {
+    public void testVersion() throws Exception {
         ApplicationInfo info = ApplicationInfo.getInstance();
         assertEquals(new DefaultMetadataVersion(info.getReleaseNumber()), getMetadataInstance().getVersion());
     }
 
-//
-// TODO
-// FIXME
-//
-//    @Test
-//    public void testCreateDataSource() throws Exception {
-//        String displayName = "h2-connector";
-//        String type = "h2";
-//        String dsName = "accounts-ds";
-//        String jndiName = "java:/accounts-ds";
-//        String connUrl = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1";
-//
-//        if (teiidInstance.dataSourceExists(dsName))
-//            teiidInstance.deleteDataSource(dsName);
-//
-//        Properties properties = new Properties();
-//        properties.setProperty(TeiidInstance.DATASOURCE_JNDINAME, jndiName);
-//        properties.setProperty(TeiidInstance.DATASOURCE_CONNECTION_URL, connUrl);
-//
-//        TeiidDataSource accountsDS = teiidInstance.getOrCreateDataSource(displayName, dsName, type, properties);
-//        assertNotNull(accountsDS);
-//
-//        assertEquals(dsName, accountsDS.getName());
-//        assertEquals(type, accountsDS.getType());
-//        assertEquals(jndiName, accountsDS.getPropertyValue(TeiidInstance.DATASOURCE_JNDINAME));
-//        assertEquals(connUrl, accountsDS.getPropertyValue(TeiidInstance.DATASOURCE_CONNECTION_URL));
-//
-//        teiidInstance.deleteDataSource(dsName);
-//        assertFalse(teiidInstance.dataSourceExists(dsName));
-//    }
+    @Test
+    public void testCreateDataSource() throws Exception {
+        String displayName = "h2-connector";
+        String type = "h2";
+        String dsName = "accounts-ds";
+        String jndiName = "java:/accounts-ds";
+        String connUrl = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1";
+
+        if (getMetadataInstance().dataSourceExists(dsName))
+            getMetadataInstance().deleteDataSource(dsName);
+
+        Properties properties = new Properties();
+        properties.setProperty(TeiidDataSource.DATASOURCE_JNDINAME, jndiName);
+        properties.setProperty(TeiidDataSource.DATASOURCE_CONNECTION_URL, connUrl);
+
+        TeiidDataSource accountsDS = getMetadataInstance().getOrCreateDataSource(displayName, dsName, type, properties);
+        assertNotNull(accountsDS);
+
+        assertEquals(dsName, accountsDS.getName());
+        assertEquals(type, accountsDS.getType());
+        assertEquals(jndiName, accountsDS.getPropertyValue(TeiidDataSource.DATASOURCE_JNDINAME));
+        assertEquals(connUrl, accountsDS.getPropertyValue(TeiidDataSource.DATASOURCE_CONNECTION_URL));
+
+        getMetadataInstance().deleteDataSource(dsName);
+        assertFalse(getMetadataInstance().dataSourceExists(dsName));
+    }
 
     @Test
     public void testDeployment() throws Exception {
@@ -91,11 +96,18 @@ public class TestMetadataServer extends AbstractMetadataInstanceTests {
         assertEquals(0, vdbs.size());
     }
 
-    private void wait(int seconds) {
+    @Test
+    public void testGetSchema() throws Exception {
         try {
-            Thread.sleep(seconds * 1000);
+            getMetadataInstance().getSchema("blah", "1.0", "model");
         } catch (Exception ex) {
-            // Nothing required
+            //
+            // Should throw this exception since blah does not exist but should not
+            // throw a NumberFormatException or NoSuchMethodException
+            //
+            Throwable cause = ex.getCause();
+            assertTrue(cause instanceof AdminProcessingException);
+            assertTrue(cause.getMessage().contains("does not exist or is not ACTIVE"));
         }
     }
 
@@ -134,91 +146,21 @@ public class TestMetadataServer extends AbstractMetadataInstanceTests {
         return teiidDataSource;
     }
 
-//    @Test
-//    @Ignore( "Test demonstrates TEIID-4592 / 3834. Question when it will be fixed for Teiid 9.1+" )
-//    public void testDataSourceOperations() throws Exception {
-//        getTeiidInstance().connect();
-//        assertTrue(getTeiidInstance().isConnected());
-//
-//        String MYSQL_DRIVER = "mysql-connector";
-//
-//        InputStream driverStream = TestUtilities.mySqlDriver();
-//        assertNotNull(driverStream);
-//
-//        File driverFile = TestUtilities.createTempFile(MYSQL_DRIVER, ".jar");
-//        driverFile.deleteOnExit();
-//        FileUtils.write(driverStream, driverFile);
-//        getTeiidInstance().deployDriver(MYSQL_DRIVER, driverFile);
-//
-//        wait(2);
-//
-//        TeiidDataSource teiidDataSource = deployDataSource();
-//        assertTrue(getTeiidInstance().dataSourceExists(teiidDataSource.getName()));
-//
-//        String dsName = teiidDataSource.getName();
-//        getTeiidInstance().deleteDataSource(dsName);
-//
-//        wait(4);
-//
-//        getTeiidInstance().reconnect();
-//
-//        assertFalse(getTeiidInstance().dataSourceExists(dsName));
-//
-//        /*
-//         * Try redeploying
-//         */
-//        try {
-//            teiidDataSource = deployDataSource();
-//            wait(4);
-//            getTeiidInstance().reconnect();
-//
-//            assertTrue(getTeiidInstance().dataSourceExists(dsName));
-//        } catch (Exception ex) {
-//            throw ex;
-//        } finally {
-//            if (getTeiidInstance().dataSourceExists(dsName)) {
-//                // Ensure everything tidied up at the end
-//                getTeiidInstance().deleteDataSource(dsName);
-//                wait(4);
-//            }
-//        }
-//    }
-//
-//    @Test
-//    public void testDataSourceDrivers() throws Exception {
-//        getTeiidInstance().connect();
-//        assertTrue(getTeiidInstance().isConnected());
-//        Collection<ConnectionDriver> dataSourceDrivers = getTeiidInstance().getDrivers();
-//        assertTrue(dataSourceDrivers.size() > 0);
-//
-//        String[] driverNamesArr = {"h2", "teiid-local", "teiid"};
-//        List<String> driverNames = Arrays.asList(driverNamesArr);
-//        String[] classNamesArr = {"org.teiid.jdbc.TeiidDriver", "org.h2.Driver"};
-//        List<String> classNames = Arrays.asList(classNamesArr);
-//
-//        Iterator<ConnectionDriver> iter = dataSourceDrivers.iterator();
-//        while (iter.hasNext()) {
-//            ConnectionDriver driver = iter.next();
-//            assertTrue(driverNames.contains(driver.getName()));
-//            assertTrue(classNames.contains(driver.getClassName()));
-//        }
-//    }
-//
-//    @Test
-//    public void testGetSchema() throws Exception {
-//        getTeiidInstance().connect();
-//        assertTrue(getTeiidInstance().isConnected());
-//
-//        try {
-//            getTeiidInstance().getSchema("blah", "1.0", "model");
-//        } catch (InvocationTargetException ex) {
-//            //
-//            // Should throw this exception since blah does not exist but should not
-//            // throw a NumberFormatException or NoSuchMethodException
-//            //
-//            Throwable cause = ex.getCause();
-//            assertTrue(cause instanceof AdminProcessingException);
-//            assertTrue(cause.getMessage().contains("does not exist or is not ACTIVE"));
-//        }
-//    }
+    @Test
+    public void testDataSourceDrivers() throws Exception {
+        Collection<ConnectionDriver> dataSourceDrivers = getMetadataInstance().getDataSourceDrivers();
+        assertTrue(dataSourceDrivers.size() > 0);
+
+        String[] driverNamesArr = {"h2", "teiid-local", "teiid"};
+        List<String> driverNames = Arrays.asList(driverNamesArr);
+        String[] classNamesArr = {"org.teiid.jdbc.TeiidDriver", "org.h2.Driver"};
+        List<String> classNames = Arrays.asList(classNamesArr);
+
+        Iterator<ConnectionDriver> iter = dataSourceDrivers.iterator();
+        while (iter.hasNext()) {
+            ConnectionDriver driver = iter.next();
+            assertTrue(driverNames.contains(driver.getName()));
+        }
+    }
+
 }

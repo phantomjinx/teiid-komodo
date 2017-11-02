@@ -122,7 +122,7 @@ public final class RestMetadataStatus extends AbstractKEntity {
             setDataSourceSize(dataSources.size());
             setDataSourcesNames(dataSources);
 
-            Collection<ConnectionDriver> dataSourceDrivers = mServer.getDrivers();
+            Collection<ConnectionDriver> dataSourceDrivers = mServer.getDataSourceDrivers();
             setDataSourceDriverSize(dataSourceDrivers.size());
             if (dataSourceDrivers == null || dataSourceDrivers.isEmpty())
                 this.sourceDrivers = Collections.emptyList();

@@ -33,15 +33,12 @@ public class RestConnectionDriver implements KRestEntity {
 
     private String name;
 
-    private String className;
-
     public RestConnectionDriver() {
         super();
     }
 
     public RestConnectionDriver(ConnectionDriver driver) {
         this.name = driver.getName();
-        this.className = driver.getClassName();
     }
 
     public String getName() {
@@ -50,14 +47,6 @@ public class RestConnectionDriver implements KRestEntity {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getClassName() {
-        return className;
-    }
-
-    public void setClassName(String className) {
-        this.className = className;
     }
 
     @Override

@@ -41,7 +41,17 @@ public class Messages implements StringConstants {
     public enum MetadataServer {
 
         NotAJcrNode,
-        onlySupportingDynamicVdbs;
+        onlySupportingDynamicVdbs,
+        cannotConnectToInstance,
+        instanceDeployUndeployProblemPingingTeiidJdbc,
+        vdbConnectionFailure,
+        failedToGetDriverMappings,
+        jarDeploymentJarNotFound,
+        jarDeploymentFailed,
+        jarDeploymentJarNotReadable,
+        jdbcSourceForClassNameNotFound,
+        dataSourceTypeDoesNotExist,
+        errorCreatingDataSource;
 
         @Override
         public String toString() {
