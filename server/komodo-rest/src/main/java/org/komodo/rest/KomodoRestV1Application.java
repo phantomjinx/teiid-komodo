@@ -25,7 +25,6 @@ import static org.komodo.rest.Messages.Error.KOMODO_ENGINE_CLEAR_TIMEOUT;
 import static org.komodo.rest.Messages.Error.KOMODO_ENGINE_SHUTDOWN_ERROR;
 import static org.komodo.rest.Messages.Error.KOMODO_ENGINE_SHUTDOWN_TIMEOUT;
 import static org.komodo.rest.Messages.Error.KOMODO_ENGINE_STARTUP_TIMEOUT;
-
 import java.io.File;
 import java.io.InputStream;
 import java.util.Collections;
@@ -33,14 +32,12 @@ import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-
 import javax.annotation.PreDestroy;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-
 import org.komodo.core.KEngine;
 import org.komodo.core.repository.LocalRepository;
 import org.komodo.core.repository.SynchronousCallback;
@@ -67,6 +64,7 @@ import org.komodo.rest.service.KomodoMetadataService;
 import org.komodo.rest.service.KomodoSearchService;
 import org.komodo.rest.service.KomodoUtilService;
 import org.komodo.rest.service.KomodoVdbService;
+import org.komodo.rest.swagger.RestPropertyConverter;
 import org.komodo.spi.KEvent.Type;
 import org.komodo.spi.KException;
 import org.komodo.spi.constants.StringConstants;
@@ -80,6 +78,7 @@ import org.komodo.spi.repository.Repository.UnitOfWork;
 import org.komodo.spi.repository.RepositoryClientEvent;
 import org.komodo.utils.KLog;
 import org.komodo.utils.observer.KLatchObserver;
+import io.swagger.converter.ModelConverters;
 
 /**
  * The JAX-RS {@link Application} that provides the Komodo REST API.
@@ -641,8 +640,12 @@ public class KomodoRestV1Application extends Application implements StringConsta
         //
         // Add converters for display of definitions
         //
-//        ModelConverters converters = ModelConverters.getInstance();
-//        converters.addConverter(new RestPropertyConverter());
+        try {
+            ModelConverters converters = ModelConverters.getInstance();
+            converters.addConverter(new RestPropertyConverter());
+        } catch (Throwable ex) {
+            ex.printStackTrace();
+        }
 //        converters.addConverter(new RestVdbConditionConverter());
 //        converters.addConverter(new RestVdbConverter());
 //        converters.addConverter(new RestVdbDataRoleConverter());

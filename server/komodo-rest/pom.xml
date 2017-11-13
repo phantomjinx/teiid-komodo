@@ -24,8 +24,7 @@
 		<app.rest.title>Vdb Builder</app.rest.title>
 		<app.rest.version>${project.version}</app.rest.version>
 		<app.rest.description>A tool that allows creating, editing and managing dynamic VDBs and their contents</app.rest.description>
-		<manifest.dependencies>org.jboss.logging,org.jboss.teiid.api, org.jboss.teiid.admin, org.jboss.teiid.common-core,org.jboss.teiid</manifest.dependencies>
-	    <!--com.fasterxml.jackson.core.jackson-core,com.fasterxml.jackson.core.jackson-databind, com.fasterxml.jackson.core.jackson-annotations -->
+		<manifest.dependencies>org.jboss.logging,org.jboss.teiid.api, org.jboss.teiid.admin, org.jboss.teiid.common-core,org.jboss.teiid,com.fasterxml.jackson.core.jackson-core,com.fasterxml.jackson.core.jackson-databind, com.fasterxml.jackson.core.jackson-annotations</manifest.dependencies>
 	</properties>
 
 	<dependencies>
@@ -110,16 +109,6 @@
 		    <groupId>org.wildfly.swarm</groupId>
   		    <artifactId>management</artifactId>
 		</dependency>
-<!-- 		<dependency>
-			<groupId>javax.inject</groupId>
-			<artifactId>javax.inject</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>javax.enterprise</groupId>
-			<artifactId>cdi-api</artifactId>
-			<scope>provided</scope>
-		</dependency> -->
 	    <dependency>
 	      <groupId>javax</groupId>
 	      <artifactId>javaee-api</artifactId>
@@ -145,16 +134,7 @@
 		    <groupId>com.fasterxml.jackson.core</groupId>
 		    <artifactId>jackson-annotations</artifactId>
 		    <scope>provided</scope>
-		</dependency>		
-		<!--
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-core-asl</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-mapper-asl</artifactId>
-		</dependency> -->
 		<dependency>
 		  <groupId>org.wildfly.swarm</groupId>
 		  <artifactId>swagger</artifactId>
@@ -162,27 +142,9 @@
 		<dependency>
 			<groupId>io.swagger</groupId>
 			<artifactId>swagger-core</artifactId>
+			<scope>provided</scope>
 		</dependency>
-		<!--
- 		<dependency>
-			<groupId>io.swagger</groupId>
-			<artifactId>swagger-annotations</artifactId>
-		</dependency>
-				
-		<dependency>
-			<groupId>io.swagger</groupId>
-			<artifactId>swagger-models</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>io.swagger</groupId>
-			<artifactId>swagger-jaxrs</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>resteasy-test-tjws</artifactId>
-			<scope>test</scope>
-		</dependency>
-		 -->
+
 		<dependency>
 			<groupId>org.jboss.spec</groupId>
 			<artifactId>jboss-javaee-7.0</artifactId>
