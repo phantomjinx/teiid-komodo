@@ -43,6 +43,7 @@ import org.komodo.rest.relational.json.connection.ConnectionSchemaSerializer;
 import org.komodo.rest.relational.json.connection.ConnectionSerializer;
 import org.komodo.rest.relational.json.connection.MetadataConnectionSerializer;
 import org.komodo.rest.relational.request.KomodoConnectionAttributes;
+import org.komodo.rest.relational.request.KomodoConnectionServiceConnAttributes;
 import org.komodo.rest.relational.request.KomodoDataSourceJdbcTableAttributes;
 import org.komodo.rest.relational.request.KomodoDataserviceSingleSourceAttributes;
 import org.komodo.rest.relational.request.KomodoDataserviceUpdateAttributes;
@@ -60,6 +61,7 @@ import org.komodo.rest.relational.response.RestGitRepository;
 import org.komodo.rest.relational.response.RestQueryColumn;
 import org.komodo.rest.relational.response.RestQueryResult;
 import org.komodo.rest.relational.response.RestQueryRow;
+import org.komodo.rest.relational.response.RestServiceCatalogDataSource;
 import org.komodo.rest.relational.response.RestStorageType;
 import org.komodo.rest.relational.response.RestStorageTypeDescriptor;
 import org.komodo.rest.relational.response.RestVdb;
@@ -140,6 +142,7 @@ public final class KomodoJsonMarshaller {
                                                   .registerTypeAdapter(RestMetadataVdbStatusVdb.class, new MetadataVdbStatusVdbSerializer())
                                                   .registerTypeAdapter(RestMetadataConnection.class, new MetadataConnectionSerializer())
                                                   .registerTypeAdapter(RestMetadataVdbTranslator.class, new MetadataVdbTranslatorSerializer())
+                                                  .registerTypeAdapter(RestServiceCatalogDataSource.class, new ServiceCatalogDataSourceSerializer())
                                                   .registerTypeAdapter(ConnectionSchema.class, new ConnectionSchemaSerializer())
                                                   .registerTypeAdapter(ConnectionSchemaPropertyListSerializer.class, new ConnectionSchemaPropertyListSerializer())
                                                   .registerTypeAdapter(ConnectionSchemaPairProperty.class, new ConnectionSchemaPropertyPairPropertySerializer())
@@ -154,6 +157,7 @@ public final class KomodoJsonMarshaller {
                                                   .registerTypeAdapter(RestQueryColumn.class, new QueryColumnSerializer())
                                                   .registerTypeAdapter(RestQueryRow.class, new QueryRowSerializer())
                                                   .registerTypeAdapter(KomodoConnectionAttributes.class, new ConnectionAttributesSerializer())
+                                                  .registerTypeAdapter(KomodoConnectionServiceConnAttributes.class, new ConnectionServiceConnAttributesSerializer())
                                                   .registerTypeAdapter(RestGitRepository.class, new GitRepositorySerializer());
 
         BUILDER = temp.create();

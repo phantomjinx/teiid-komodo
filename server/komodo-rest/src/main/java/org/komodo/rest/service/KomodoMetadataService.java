@@ -35,6 +35,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import javax.naming.InitialContext;
@@ -99,6 +100,7 @@ import org.komodo.rest.relational.response.metadata.RestMetadataVdb;
 import org.komodo.rest.relational.response.metadata.RestMetadataVdbStatus;
 import org.komodo.rest.relational.response.metadata.RestMetadataVdbTranslator;
 import org.komodo.spi.KException;
+import org.komodo.spi.constants.ExportConstants;
 import org.komodo.spi.constants.StringConstants;
 import org.komodo.spi.lexicon.vdb.VdbLexicon;
 import org.komodo.spi.metadata.MetadataInstance;
@@ -2290,6 +2292,12 @@ public class KomodoMetadataService extends KomodoService {
                 return createErrorResponseWithForbidden(mediaTypes, RelationalMessages.Error.METADATA_SERVICE_NO_VDB_FOUND);
             }
 
+            Properties exportProps = new Properties();
+            exportProps.put( ExportConstants.USE_TABS_PROP_KEY, true );
+
+            byte[] xml = vdb.export(uow, exportProps);
+            String xmlString = new String(xml);
+            
             //
             // Deploy the VDB
             //
@@ -3416,5 +3424,6 @@ public class KomodoMetadataService extends KomodoService {
 			return createErrorResponse(Status.FORBIDDEN, mediaTypes, e,
 					RelationalMessages.Error.METADATA_SERVICE_CATALOG_DATA_SERVIVE_BIND_ERROR, e, attributes.getName());
 		   }
-    }	
+    }
+
 }
